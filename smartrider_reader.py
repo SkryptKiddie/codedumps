@@ -38,8 +38,8 @@ def parseDump(inputData):
     print("Card balance: $" + str(balance))
 
     for off in ([0x50]):  # Read card config (sector 1, block 0-2)
-        token = unpack("=8x4s4x", inputData[off:off+16])
-        print("Card token: " + str(token) + " (token is the x0_ value)")
+        token = unpack("<8x1b7x", inputData[off:off+16])[0]
+        print("Card token: 0x0" + str(token))
 
 parser = ArgumentParser()
 parser.add_argument("input", type=FileType("rb"), nargs=1)
