@@ -2,7 +2,7 @@
 # converted to python3 with minor changes
 from argparse import ArgumentParser, FileType
 from struct import unpack
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 
 class t:
     HEADER = '\033[95m'
@@ -12,7 +12,7 @@ class t:
     ON = '\033[92m'
     BLUE = '\033[94m'
 
-EPOCH = datetime(2000,1,1,0,0)
+EPOCH = datetime(2000, 1, 1, 0, 0)
 
 def parseDump(inputData):
     if len(inputData) != 1024: # check if the dump exceeds the mifare 1k size
@@ -37,9 +37,19 @@ def parseDump(inputData):
     balance /= 100.
     print("Card balance: $" + str(balance))
 
-    for off in ([0x50]):  # Read card config (sector 1, block 0-2)
+    for off in ([0x50]):  # Read card token (sector 1 at offset 88 at )
         token = unpack("<8x1b7x", inputData[off:off+16])[0]
         print("Card token: 0x0" + str(token))
+    
+    for off in ([0x50]): # read card issue (sector 1, offset 80 at 0x50)
+        issued = unpack("<2H12x", inputData[off:off+16])[0]
+        issued = date(int(1997) ,int(1), int(1)) + timedelta(issued) # subtract the days from 1997-1-1
+        print("Card issued: " + str(issued))
+
+    for off in ([0x52]): # read card token expiry (sector 1, offset 82 at 0x52)
+        expiry = unpack("<2H12x", inputData[off:off+16])[0]
+        expiry = date(int(1997) ,int(1), int(1)) + timedelta(expiry) # subtract the days from 1997-1-1
+        print("Card token expiry: " + str(expiry))
 
 parser = ArgumentParser()
 parser.add_argument("input", type=FileType("rb"), nargs=1)
