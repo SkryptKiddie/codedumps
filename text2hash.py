@@ -1,3 +1,4 @@
+# hashed 466549 words in 447 seconds on a Dell Lattitude E7250 using sha512
 import hashlib, sys, argparse, time
 from datetime import datetime
 from hashlib import *
@@ -62,11 +63,10 @@ def identifyMethod(string): # find out what algorithm the user wants to choose
     
     else: # invalid option
         return "Unknown value passed!"
-        sys.exit()
 
 start_time = time.perf_counter()
 counter = 0 # init the counter
-print("Text2Hash")
+print("Text2Hash -- Created by SkryptKiddie\nShared under the GNU General Public License v3.0")
 with open(str(args.output), "a+") as output: # initialise the file so we don't have to use a+ during the hash method, which makes the program run much faster. also creates the output file if it doesn't already exist.
     output.write("Generated at {} using the {} algorithm with text from {}\n\n".format(datetime.now(), str(args.method), str(args.input)))
     output.close()
